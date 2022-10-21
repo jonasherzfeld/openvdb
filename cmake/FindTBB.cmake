@@ -175,12 +175,7 @@ endif()
 # From TBB 2021, tbb_stddef is removed and the directory include/tbb is
 # simply an alias for include/oneapi/tbb. Try and find the version header
 # in oneapi/tbb
-find_path(Tbb_INCLUDE_DIR oneapi/tbb/version.h
-  ${_FIND_TBB_ADDITIONAL_OPTIONS}
-  PATHS ${_TBB_INCLUDE_SEARCH_DIRS}
-  PATH_SUFFIXES ${CMAKE_INSTALL_INCLUDEDIR} include
-)
-
+set(Tbb_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}}/include")
 set(_tbb_legacy_version_file "${Tbb_LEGACY_INCLUDE_DIR}/tbb/tbb_stddef.h")
 set(_tbb_version_file "${Tbb_INCLUDE_DIR}/oneapi/tbb/version.h")
 
@@ -272,11 +267,7 @@ foreach(COMPONENT ${TBB_FIND_COMPONENTS})
       set(_TBB_LIB_NAME "${_TBB_LIB_NAME}${TBB_DEBUG_SUFFIX}")
     endif()
 
-    find_library(Tbb_${COMPONENT}_LIBRARY_${BUILD_TYPE} ${_TBB_LIB_NAME}
-      ${_FIND_TBB_ADDITIONAL_OPTIONS}
-      PATHS ${_TBB_LIBRARYDIR_SEARCH_DIRS}
-      PATH_SUFFIXES ${CMAKE_INSTALL_LIBDIR} lib64 lib
-    )
+    set(Tbb_${COMPONENT}_LIBRARY_${BUILD_TYPE} ${CMAKE_INSTALL_PREFIX}/lib/lib${COMPONENT}.so)
 
     # On Unix, TBB sometimes uses linker scripts instead of symlinks, so parse the linker script
     # and correct the library name if so
