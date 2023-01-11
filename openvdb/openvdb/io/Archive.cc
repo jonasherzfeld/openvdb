@@ -1338,6 +1338,7 @@ Archive::write(std::ostream& os, const GridCPtrVec& grids, bool seekable,
         // Restore the original settings before writing the next grid.
         io::setDataCompression(os, compression());
     }
+    io::clearStreamMetadataPtr(os);
 }
 
 

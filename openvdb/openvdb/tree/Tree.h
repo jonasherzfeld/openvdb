@@ -25,6 +25,7 @@
 #include <mutex>
 #include <sstream>
 #include <vector>
+#include <main/rack_memory_resource.h>
 
 
 namespace openvdb {
@@ -1063,7 +1064,7 @@ protected:
     // TBB body object used to deallocates nodes in parallel.
     template<typename NodeType>
     struct DeallocateNodes {
-        DeallocateNodes(std::vector<NodeType*>& nodes)
+        DeallocateNodes(pmr::vector<NodeType*>& nodes)
             : mNodes(nodes.empty() ? nullptr : &nodes.front()) { }
         void operator()(const tbb::blocked_range<size_t>& range) const {
             for (size_t n = range.begin(), N = range.end(); n < N; ++n) {
@@ -1318,17 +1319,23 @@ template<typename RootNodeType>
 inline void
 Tree<RootNodeType>::clear()
 {
-    std::vector<LeafNodeType*> leafnodes;
+    pmr::vector<LeafNodeType*> leafnodes;
     this->stealNodes(leafnodes);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, leafnodes.size()),
-        DeallocateNodes<LeafNodeType>(leafnodes));
+    // tbb::parallel_for(tbb::blocked_range<size_t>(0, leafnodes.size()),
+    //     DeallocateNodes<LeafNodeType>(leafnodes));
+    for (size_t n = 0, N = leafnodes.size(); n < N; ++n) {
+        delete leafnodes[n]; leafnodes[n] = nullptr;
+    }
 
-    std::vector<typename RootNodeType::ChildNodeType*> internalNodes;
+    pmr::vector<typename RootNodeType::ChildNodeType*> internalNodes;
     this->stealNodes(internalNodes);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, internalNodes.size()),
-        DeallocateNodes<typename RootNodeType::ChildNodeType>(internalNodes));
+    // tbb::parallel_for(tbb::blocked_range<size_t>(0, internalNodes.size()),
+    //     DeallocateNodes<typename RootNodeType::ChildNodeType>(internalNodes));
+    for (size_t n = 0, N = internalNodes.size(); n < N; ++n) {
+        delete internalNodes[n]; internalNodes[n] = nullptr;
+    }
 
     mRoot.clear();
 

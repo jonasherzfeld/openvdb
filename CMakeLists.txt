@@ -66,7 +66,7 @@ include(GNUInstallDirs)
 
 # todo epydoc and pdflatex
 option(OPENVDB_BUILD_CORE "Enable the core OpenVDB library. Both static and shared versions are enabled by default" ON)
-option(OPENVDB_BUILD_BINARIES "Enable the vdb binaries. Only vdb_print is enabled by default" ON)
+option(OPENVDB_BUILD_BINARIES "Enable the vdb binaries. Only vdb_print is enabled by default" OFF)
 option(OPENVDB_BUILD_PYTHON_MODULE "Build the pyopenvdb Python module" OFF)
 option(OPENVDB_BUILD_UNITTESTS "Build the OpenVDB unit tests" OFF)
 option(OPENVDB_BUILD_DOCS "Build the OpenVDB documentation" OFF)
@@ -79,12 +79,12 @@ option(OPENVDB_BUILD_AX_UNITTESTS "Build the OpenVDB AX unit tests" OFF)
 option(OPENVDB_BUILD_NANOVDB "Build the NanoVDB library. Turns ON if USE_NANOVDB is ON." ${USE_NANOVDB})
 
 option(OPENVDB_BUILD_MAYA_PLUGIN "Build the Maya plugin" OFF)
-option(OPENVDB_ENABLE_RPATH "Build with RPATH information" ON)
+option(OPENVDB_ENABLE_RPATH "Build with RPATH information" OFF)
 option(OPENVDB_CXX_STRICT "Enable or disable pre-defined compiler warnings" OFF)
 
 cmake_dependent_option(OPENVDB_INSTALL_CMAKE_MODULES
   "Install the provided OpenVDB CMake modules when building the core library"
-  ON "OPENVDB_BUILD_CORE" OFF)
+  OFF "OPENVDB_BUILD_CORE" OFF)
 
 option(USE_HOUDINI [=[
 Build the library against a Houdini installation. Turns on automatically if OPENVDB_BUILD_HOUDINI_PLUGIN is enabled.
@@ -94,14 +94,14 @@ option(USE_MAYA [=[
 Build the library against a Maya installation. Turns on automatically if OPENVDB_BUILD_MAYA_PLUGIN is enabled.
 When enabled, you do not need to provide dependency locations for TBB. All other dependencies must be provided.]=] OFF)
 option(USE_TBB [=[
-Use TBB in building the NanoVDB library.]=] ON)
+Use TBB in building the NanoVDB library.]=] OFF)
 option(USE_BLOSC [=[
 Use blosc while building openvdb components. If OPENVDB_BUILD_CORE is OFF, CMake attempts to query the located
 openvdb build configuration to decide on blosc support. You may set this to on to force blosc to be used if you
-know it to be required.]=] ON)
+know it to be required.]=] OFF)
 option(USE_ZLIB [=[
 Use zlib while building openvdb components. If OPENVDB_BUILD_CORE is OFF, CMake attempts to query the located
-openvdb build configuration to decide on zlib support. ZLib can only be disabled if Blosc is also disabled. ]=] ON)
+openvdb build configuration to decide on zlib support. ZLib can only be disabled if Blosc is also disabled. ]=] OFF)
 option(USE_LOG4CPLUS [=[
 Use log4cplus while building openvdb components. If OPENVDB_BUILD_CORE is OFF, CMake attempts to query the
 located openvdb build configuration to decide on log4cplus support. You may set this to on to force log4cplus
@@ -137,14 +137,14 @@ list will be searched.]=] OFF)
 option(OPENVDB_USE_DEPRECATED_ABI_7 "Bypass minimum ABI requirement checks" OFF)
 option(OPENVDB_USE_DEPRECATED_ABI_8 "Bypass minimum ABI requirement checks" OFF)
 option(OPENVDB_USE_FUTURE_ABI_10 "Bypass future ABI check" OFF)
-option(OPENVDB_FUTURE_DEPRECATION "Generate messages for upcoming deprecation" ON)
-option(OPENVDB_ENABLE_UNINSTALL "Adds a CMake uninstall target." ON)
+option(OPENVDB_FUTURE_DEPRECATION "Generate messages for upcoming deprecation" OFF)
+option(OPENVDB_ENABLE_UNINSTALL "Adds a CMake uninstall target." OFF)
 option(USE_COLORED_OUTPUT "Always produce ANSI-colored output (GNU/Clang only)." OFF)
-cmake_dependent_option(USE_PKGCONFIG "Use pkg-config to search for dependent libraries." ON "NOT WIN32" OFF)
+cmake_dependent_option(USE_PKGCONFIG "Use pkg-config to search for dependent libraries." OFF "NOT WIN32" OFF)
 
 option(USE_EXPLICIT_INSTANTIATION "Use explicit instantiation for all supported classes and methods against a
 pre-defined list of OpenVDB trees. This makes the core library larger and slower to compile, but speeds up
-the compilation of all dependent code by bypassing the expensive template instantation." ON)
+the compilation of all dependent code by bypassing the expensive template instantation." OFF)
 
 set(SYSTEM_LIBRARY_PATHS "" CACHE STRING [=[
 A global list of library paths to additionally use into when searching for dependencies.]=])

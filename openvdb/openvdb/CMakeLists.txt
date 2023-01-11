@@ -127,11 +127,13 @@ if(OPENVDB_FUTURE_DEPRECATION AND FUTURE_MINIMUM_BOOST_VERSION)
   endif()
 endif()
 
-find_package(TBB ${MINIMUM_TBB_VERSION} REQUIRED COMPONENTS tbb)
-if(OPENVDB_FUTURE_DEPRECATION AND FUTURE_MINIMUM_TBB_VERSION)
-  if(${Tbb_VERSION} VERSION_LESS FUTURE_MINIMUM_TBB_VERSION)
-    message(DEPRECATION "Support for TBB versions < ${FUTURE_MINIMUM_TBB_VERSION} "
-      "is deprecated and will be removed.")
+if (NOT TARGET TBB::tbb)
+  find_package(TBB ${MINIMUM_TBB_VERSION} REQUIRED COMPONENTS tbb)
+  if(OPENVDB_FUTURE_DEPRECATION AND FUTURE_MINIMUM_TBB_VERSION)
+    if(${Tbb_VERSION} VERSION_LESS FUTURE_MINIMUM_TBB_VERSION)
+      message(DEPRECATION "Support for TBB versions < ${FUTURE_MINIMUM_TBB_VERSION} "
+        "is deprecated and will be removed.")
+    endif()
   endif()
 endif()
 
