@@ -214,7 +214,7 @@ public:
     virtual Vec3d applyJacobian(const Vec3d& in, const Vec3d& domainPos) const = 0;
     //@}
 
-    virtual void setScale(const Vec3d& scale) = 0;
+    virtual int32_t   setScale(const double& scale) = 0;
 
     //@{
     /// @brief Apply the InverseJacobian of this map to a vector.
@@ -433,7 +433,7 @@ public:
     /// Return the Jacobian of the map applied to @a in.
     Vec3d applyJacobian(const Vec3d& in) const override { return mMatrix.transform3x3(in); }
 
-    void setScale(const Vec3d& scale) override { /*NOT IMPLEMENTED*/}
+    int32_t   setScale(const double& scale) override { return 0;}
 
     /// @brief Return the Inverse Jacobian of the map applied to @a in
     /// (i.e. inverse map with out translation)
@@ -763,16 +763,17 @@ public:
     /// Return the Jacobian of the map applied to @a in.
     Vec3d applyJacobian(const Vec3d& in) const OPENVDB_MAP_FUNC_SPECIFIER { return applyMap(in); }
 
-    void setScale(const Vec3d& scale) OPENVDB_MAP_FUNC_SPECIFIER {
-        mScaleValues = Vec3d(std::abs(scale.x()),std::abs(scale.y()), std::abs(scale.z()));
-        mVoxelSize = Vec3d(std::abs(scale.x()),std::abs(scale.y()), std::abs(scale.z()));
-        double determinant = scale[0]* scale[1] * scale[2];
-        if (std::abs(determinant) < 3.0 * math::Tolerance<double>::value()) {
-            OPENVDB_THROW(ArithmeticError, "Non-zero scale values required");
+    int32_t   setScale(const double& scale) OPENVDB_MAP_FUNC_SPECIFIER {
+        if (std::abs(scale) < math::Tolerance<double>::value()) {
+          return -EINVAL;
         }
+        mScaleValues = Vec3d(std::abs(scale),std::abs(scale), std::abs(scale));
+        mVoxelSize = Vec3d(std::abs(scale),std::abs(scale), std::abs(scale));
         mScaleValuesInverse = 1.0 / mScaleValues;
         mInvScaleSqr = mScaleValuesInverse * mScaleValuesInverse;
         mInvTwiceScale = mScaleValuesInverse / 2;
+
+        return 0;
     }
 
     /// @brief Return the Inverse Jacobian of the map applied to @a in
@@ -1055,7 +1056,7 @@ public:
     /// Return the Jacobian of the map applied to @a in.
     Vec3d applyJacobian(const Vec3d& in) const override { return in; }
 
-    void setScale(const Vec3d& in) override { /*NOT IMPLEMENTED*/ }
+    int32_t   setScale(const double& in) override { return 0; }
 
     /// @brief Return the Inverse Jacobian of the map applied to @a in
     /// (i.e. inverse map with out translation)
@@ -1311,7 +1312,7 @@ public:
     /// Return the Jacobian of the map applied to @a in.
     Vec3d applyJacobian(const Vec3d& in) const OPENVDB_MAP_FUNC_SPECIFIER { return in * mScaleValues; }
 
-    void setScale(const Vec3d& in) OPENVDB_MAP_FUNC_SPECIFIER { /*NOT IMPLEMENTED*/ }
+    int32_t   setScale(const double& in) OPENVDB_MAP_FUNC_SPECIFIER { return 0; }
 
     /// @brief Return the Inverse Jacobian of the map applied to @a in
     /// (i.e. inverse map with out translation)
@@ -1779,7 +1780,7 @@ public:
     /// Return the Jacobian of the map applied to @a in.
     Vec3d applyJacobian(const Vec3d& in) const override { return mAffineMap.applyJacobian(in); }
 
-    void setScale(const Vec3d& in) override { /*NOT IMPLEMENTED*/ }
+    int32_t   setScale(const double& in) override { return 0; }
 
     /// @brief Return the Inverse Jacobian of the map applied to @a in
     /// (i.e. inverse map with out translation)
@@ -2170,7 +2171,7 @@ public:
         return mSecondMap.applyJacobian(tmp);
     }
 
-    void setScale(const Vec3d& in) override { /*NOT IMPLEMENTED*/ }
+    int32_t   setScale(const double& in) override { return 0; }
 
 
     /// @brief Return the Inverse Jacobian of the map applied to @a in
